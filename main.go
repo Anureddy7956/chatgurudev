@@ -47,7 +47,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	forwardResp, err := client.Do(forwardReq)
 	if err != nil {
-		http.Error(w, "Error sending forward request", http.StatusInternalServerError)
+		http.Error(w, "Error sending forward request " + err.Error(), http.StatusInternalServerError)
 		return
 	}
 	defer forwardResp.Body.Close()

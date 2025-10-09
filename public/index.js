@@ -16,7 +16,6 @@ var currentChat;
 const origin = window.location.href;
 console.log("Response from this origin:", origin);
 
-// Define available models
 const availableModels = [
   { id: "llama3.2:1b", name: "Llama 3.2 (1B)" },
 ];
@@ -306,6 +305,7 @@ function sendPrompt(promptText){
     stream: false
   };
 
+  console.log(url, data)
   fetch(url, {
     method: 'POST',
     headers: {
