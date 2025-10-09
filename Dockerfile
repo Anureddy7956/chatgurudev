@@ -8,7 +8,7 @@ RUN ./scripts/install_dependency.sh
 
 RUN ollama pull llama3.2:latest
 RUN go mod download
-RUN go build -o ./chat_gurudev -ldflags="-s -w" ./src/
+RUN go build -o ./chat_gurudev -ldflags="-s -w" ./main.go
 
 EXPOSE 8080
 

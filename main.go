@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		http.Error(w, "Error getting current directory", http.StatusInternalServerError)
@@ -20,11 +20,11 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	publicDirBase := filepath.Join(cwd, "public")
 	fmt.Println("Serving ", publicDirBase)
-	log.Println(" ", publicDirBase)
-	http.FileServer(http.Dir(publicDirBase+"/home/")).ServeHTTP(w, r)
+	log.Println("Served " + publicDirBase + " " + r.RemoteAddr)
+	http.FileServer(http.Dir(publicDirBase)).ServeHTTP(w, r)
 }
 
-func apiHandler(w http.ResponseWriter, r *http.Request) {
+func APIHandler(w http.ResponseWriter, r *http.Request) {
 	remoteAddr := r.RemoteAddr
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -67,8 +67,8 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	timestamp := time.Now().Format("20060102_150405")
-	logFileName := "app_" + timestamp + ".log"
-	logDir := "../logs/"
+	logFileName := "chatgurudev_" + timestamp + ".log"
+	logDir := "logs/"
 	logFilePath := filepath.Join(logDir, logFileName)
 	if e := os.MkdirAll(logDir, os.ModePerm); e != nil {
 		log.Fatal(e)
@@ -82,8 +82,8 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", homeHandler)
-	mux.HandleFunc("/api", apiHandler)
+	mux.HandleFunc("/", HomeHandler)
+	mux.HandleFunc("/api", APIHandler)
 
 	port := "50505"
 	log.Printf("Server starting on port %s...", port)
