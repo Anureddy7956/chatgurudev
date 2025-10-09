@@ -1,0 +1,13 @@
+services:
+  app:
+    image: chat-gurudev
+    container_name: app
+    volumes:
+      - ./data:/usr/share/ollama/
+    ports:
+      - 8888:8080
+
+
+networks:
+  podman:
+    external: true

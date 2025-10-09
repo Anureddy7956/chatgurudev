@@ -1,12 +1,12 @@
 FROM debian:latest
 
 WORKDIR /app
+COPY . .
 
 RUN chmod +x ./scripts/install_dependency.sh
 RUN ./scripts/install_dependency.sh
 
-RUN ollama pull deepseek-r1:70b
-RUN ollama pull llama3:3
+RUN ollama pull llama3.2:latest
 RUN go mod download
 RUN go build -o ./chat_gurudev -ldflags="-s -w" ./src/
 

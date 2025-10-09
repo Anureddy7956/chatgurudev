@@ -18,7 +18,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Error getting current directory:", err)
 		return
 	}
-	publicDirBase := filepath.Join(cwd, "..", "public")
+	publicDirBase := filepath.Join(cwd, "public")
 	fmt.Println("Serving ", publicDirBase)
 	log.Println(" ", publicDirBase)
 	http.FileServer(http.Dir(publicDirBase+"/home/")).ServeHTTP(w, r)
@@ -65,6 +65,7 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
 	timestamp := time.Now().Format("20060102_150405")
 	logFileName := "app_" + timestamp + ".log"
 	logDir := "../logs/"
@@ -79,30 +80,16 @@ func main() {
 	defer file.Close()
 	log.SetOutput(file)
 
-	// Declaring the Mux
 	mux := http.NewServeMux()
 
-	// Mapping request directories to handler functions
 	mux.HandleFunc("/", homeHandler)
 	mux.HandleFunc("/api", apiHandler)
-	// .
-	// .
-	// .
-	//mux.HandleFunc("/about", aboutHandler)
 
-	//Port number must be changed to 80 for http and 443 for https before deploying
 	port := "50505"
 	log.Printf("Server starting on port %s...", port)
 	fmt.Printf("Server starting on port %s...", port)
 
-	// Creating a server and configuring port and mux
-	server := &http.Server{
-		Addr:    "0.0.0.0:" + port,
-		Handler: mux,
-	}
-
-	// Starting the server
-	err := server.ListenAndServe()
+	err := http.ListenAndServe(":"+port, mux)
 	if err != nil {
 		log.Fatal("ListenAndServe error: ", err)
 	}
