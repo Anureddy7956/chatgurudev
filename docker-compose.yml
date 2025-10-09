@@ -1,13 +1,23 @@
 services:
-  app:
-    image: chat-gurudev
-    container_name: app
+  ollama:
+    image: docker.io/ollama/ollama:latest
+    container_name: chat-gurudev-ollama 
     volumes:
-      - ./data:/usr/share/ollama/
-      - ./public:/app/public
-    ports:
-      - 8888:8080
+      - ./app_data:/root/.ollama
+      - ./models_pull.sh:/root/run.sh
+    environment:
+      OLLAMA_MAX_LOADED_MODELS: "3"
+      OLLAMA_NUM_PARALLEL: "3"
+    restart: unless-stopped
 
+  chatgurudev_app:
+    image: chat-gurudev
+    container_name: chat-gurudev-app
+    volumes:
+      - ./public:/app/public
+      - ./logs:/app/logs
+    ports:
+      - 8888:80
 
 networks:
   podman:

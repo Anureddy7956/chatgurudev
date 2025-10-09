@@ -19,7 +19,6 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	publicDirBase := filepath.Join(cwd, "public")
-	fmt.Println("Serving ", publicDirBase)
 	log.Println("Served " + publicDirBase + " " + r.RemoteAddr)
 	http.FileServer(http.Dir(publicDirBase)).ServeHTTP(w, r)
 }
@@ -36,8 +35,10 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	bodyString := string(body)
+
 	log.Println("\n" + remoteAddr + "\n" + bodyString)
-	forwardURL := "http://127.0.0.1:11434/api/chat"
+
+	forwardURL := "http://ollama:11434/api/chat"
 	forwardReq, err := http.NewRequest("POST", forwardURL, bytes.NewBuffer(body))
 	if err != nil {
 		http.Error(w, "Error creating forward request", http.StatusInternalServerError)
@@ -85,9 +86,8 @@ func main() {
 	mux.HandleFunc("/", HomeHandler)
 	mux.HandleFunc("/api", APIHandler)
 
-	port := "50505"
-	log.Printf("Server starting on port %s...", port)
-	fmt.Printf("Server starting on port %s...", port)
+	port := "80"
+	fmt.Println("Chat Gurudev Running...")
 
 	err := http.ListenAndServe(":"+port, mux)
 	if err != nil {

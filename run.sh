@@ -1,8 +1,12 @@
 #!/bin/bash
 
-if [ $2="--stop" ]; then
+if [ "$1" = "--stop" ]; then
+    echo "Stopping Containers"
     podman-compose down
     exit
 fi
 
-podman-compose up
+echo "Starting Containers"
+podman-compose up -d
+
+podman exec chat-gurudev-ollama bash /root/run.sh

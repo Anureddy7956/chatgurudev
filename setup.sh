@@ -1,6 +1,8 @@
 #!/bin/bash
 
-docker rmi -f chat-gurudev
+podman rmi -f chat-gurudev
 
-docker build -t chat-gurudev:latest .
+podman build -t chat-gurudev:latest .
+mkdir -p ./app_data ./logs
 
+podman pull docker.io/ollama/ollama
