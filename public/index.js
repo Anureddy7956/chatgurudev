@@ -12,6 +12,7 @@ if (typeof(Storage) === "undefined") {
 }
 
 var currentChat;
+var response_wait = false;
 
 const origin = window.location.href;
 console.log("Response from this origin:", origin);
@@ -84,6 +85,9 @@ function loadChat(chatName) {
   const history = JSON.parse(localStorage.getItem(chatName));
   const infobar = document.getElementById("infobar");
   infobar.innerHTML = '';
+
+  response_wait = false;
+  // I MUST IMPLEMENT STOP PROCESSING PROMPT ON THE BACKEND
 
   var nameElement = document.createElement('p');
   nameElement.textContent = chatName;
@@ -164,7 +168,7 @@ function loadChat(chatName) {
       const chatContainer = document.getElementById('messages');
       const messageText = messageInput.value;
 
-      if (messageText.trim() !== '') {
+      if (messageText.trim() !== '' && !response_wait) {
           const messageElement = document.createElement('p');
           messageElement.className = "usermessage";
           messageElement.textContent = messageText;
@@ -181,7 +185,7 @@ function loadChat(chatName) {
       const chatContainer = document.getElementById('messages');
       const messageText = messageInput.value;
 
-      if (messageText.trim() !== '') {
+      if (messageText.trim() !== '' && !response_wait) {
           const messageElement = document.createElement('p');
           messageElement.className = "usermessage";
           messageElement.textContent = messageText;
@@ -293,6 +297,7 @@ function deleteChat(name){
 }
 
 function sendPrompt(promptText){
+  response_wait = true;
   const history = JSON.parse(localStorage.getItem(currentChat));
   console.log(history.model);
   const messages = history.messages;
@@ -336,6 +341,7 @@ function sendPrompt(promptText){
         "model" : history.model,
         "messages" : messages
       }
+      response_wait = false;
       localStorage.removeItem(currentChat);
       localStorage.setItem(currentChat, JSON.stringify(newHistory));
   })
