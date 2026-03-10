@@ -1,0 +1,96 @@
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"time"
+)
+
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		http.Error(w, "Error getting current directory", http.StatusInternalServerError)
+		log.Println("Error getting current directory:", err)
+		return
+	}
+	publicDirBase := filepath.Join(cwd, "public")
+	log.Println("Served " + publicDirBase + " " + r.RemoteAddr)
+	http.FileServer(http.Dir(publicDirBase)).ServeHTTP(w, r)
+}
+
+func APIHandler(w http.ResponseWriter, r *http.Request) {
+	remoteAddr := r.RemoteAddr
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Error reading request body", http.StatusBadRequest)
+		return
+	}
+	bodyString := string(body)
+
+	log.Println("\n" + remoteAddr + "\n" + bodyString)
+
+	forwardURL := "http://ollama:11434/api/chat"
+	forwardReq, err := http.NewRequest("POST", forwardURL, bytes.NewBuffer(body))
+	if err != nil {
+		http.Error(w, "Error creating forward request", http.StatusInternalServerError)
+		return
+	}
+	client := &http.Client{}
+	forwardResp, err := client.Do(forwardReq)
+	if err != nil {
+		http.Error(w, "Error sending forward request " + err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer forwardResp.Body.Close()
+	forwardBody, err := io.ReadAll(forwardResp.Body)
+	if err != nil {
+		http.Error(w, "Error reading forward response body", http.StatusInternalServerError)
+		return
+	}
+	for key, values := range forwardResp.Header {
+		for _, value := range values {
+			w.Header().Add(key, value)
+		}
+	}
+	w.WriteHeader(forwardResp.StatusCode)
+	w.Write(forwardBody)
+}
+
+func main() {
+
+	timestamp := time.Now().Format("20060102_150405")
+	logFileName := "chatgurudev_" + timestamp + ".log"
+	logDir := "logs/"
+	logFilePath := filepath.Join(logDir, logFileName)
+	if e := os.MkdirAll(logDir, os.ModePerm); e != nil {
+		log.Fatal(e)
+	}
+	file, e := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if e != nil {
+		log.Fatal(e)
+	}
+	defer file.Close()
+	log.SetOutput(file)
+
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/", HomeHandler)
+	mux.HandleFunc("/api", APIHandler)
+
+	port := "80"
+	fmt.Println("Chat Gurudev Running...")
+
+	err := http.ListenAndServe(":"+port, mux)
+	if err != nil {
+		log.Fatal("ListenAndServe error: ", err)
+	}
+}
