@@ -1,0 +1,236 @@
+:root{
+    --bg1 : #282A2C;
+    --bg2 : #1B1C1D;
+    --highlight : #000000;
+    --accent : #ffaf00;
+    --fg : #ffffff;
+
+    --adjmaxvw : 99vw;
+    --adjmaxvh : 97vh;
+}
+
+@font-face {
+    font-family: rowreg;
+    src: url("misc/noto/NotoSans-Regular.ttf");
+}
+
+@font-face {
+    font-family: rowbol;
+    src: url("misc/noto/NotoSans-Bold.ttf");
+}
+
+@font-face {
+    font-family: rowlit;
+    src: url("misc/noto/NotoSans-Light.ttf");
+}
+
+body{
+    background-color: #000000;
+    overflow: hidden;
+}
+
+#root{
+    background-color: #000000;
+    color: var(--fg);
+    display: flex;
+    width: var(--adjmaxvw);
+    height: var(--adjmaxvh);
+    overflow-y: hidden;
+    overflow-x: hidden;
+    font-family: 'rowlit','Courier New', Courier, monospace;
+}
+
+#title{
+    width: 100%;
+    height: 4%;
+    font-size: 100%;
+    text-align: center;
+    color: var(--accent);
+    font-family: 'rowbol','Courier New', Courier, monospace;
+}
+
+#leftpane{
+    background-color: var(--bg1);
+    width: 25%;
+    height: var(--adjmaxvh);
+    overflow-y: auto;
+}
+
+#rightpane{
+    background-color: var(--bg2);
+    height: var(--adjmaxvh);
+    width: 75%;
+}
+
+.chats{
+    color: var(--fg);
+    height: 5%;
+    padding: 3%;
+}
+
+.chats:hover{
+    background-color: var(--bg2);
+}
+
+#newandnuke{
+    display: flex;
+    gap: 1%;
+}
+
+#nuke{
+    color: var(--fg);
+    background-color: var(--bg2);
+    border: none;
+    padding: 2%;
+    height: 10%;
+    width: 50%;
+}
+
+#newchat{
+    color: var(--fg);
+    background-color: var(--bg2);
+    border: none;
+    padding: 2%;
+    height: 10%;
+    width: 50%;
+}
+
+#newchat:hover{
+    background-color: var(--highlight);
+}
+
+#nuke:hover{
+    background-color: var(--highlight);
+}
+
+#infobar{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    font-family: 'rowbol','Courier New', Courier, monospace;
+}
+
+#modelname{
+    font-family: 'rowlit','Courier New', Courier, monospace;
+}
+
+.icons{
+    padding: 2%;
+}
+
+#messages{
+    height: 75%;
+    width: 100%;
+    font-family: 'rowreg','Courier New', Courier, monospace;
+    padding: 1vh;
+    overflow-y: auto;
+}
+#searchbar{
+    padding: 2vh 2%;
+    width: calc(100% - 25% - 4%);
+    max-width: 100%;
+    font-family: 'rowreg','Courier New', Courier, monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2%;
+    color: white;
+    position: fixed;
+    bottom: 0;
+    left: 25%;
+    right: 0;
+    background-color: var(--bg2);
+    border-top: 1px solid var(--bg1);
+    z-index: 100;
+    box-sizing: border-box;
+}
+
+.usermessage{
+    padding: 0.5vh;
+    color: var(--accent);
+}
+
+.botmessage{
+    padding: 0.25vh;
+}
+#messageInput{
+    flex: 1;
+    max-width: 85%;
+    padding: 1.5%;
+    background-color: var(--highlight);
+    color: var(--fg);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'rowreg','Courier New', Courier, monospace;
+    min-width: 200px;
+}
+
+#messageInput:focus {
+    outline: none;
+    border: 2px solid var(--accent);
+}
+
+#messageInput::placeholder {
+    color: #888888;
+}
+#sendButton{
+    padding: 1.5% 3%;
+    border: none;
+    background-color: var(--accent);
+    border-radius: 8px;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+#sendButton:hover {
+    background-color: #ffbc00;
+}
+
+#sendButton:active {
+    background-color: #ff9500;
+}
+.error{
+    display: flex;
+    width: var(--adjmaxvw);
+    height: var(--adjmaxvh);
+    justify-content: center;
+    align-items: center;
+    font-family: 'rowbol','Courier New', Courier, monospace;
+    font-size: 5vh;
+}
+
+.model-button {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    background-color: var(--bg1);
+    color: white;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s;
+    border: none;
+  }
+  
+  .model-button:hover {
+    background-color: var(--bg2);
+  }
+  
+  .model-button:active {
+    background-color: #dee2e6;
+  }
+  
+  .model-name {
+    font-weight: 500;
+  }
+
+  #modelSelectionContainer{
+    justify-content: space-between;
+  }
